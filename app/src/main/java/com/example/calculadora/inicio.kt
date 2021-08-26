@@ -6,18 +6,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import logicaCalculadora.*
+import logicaCalculadora.reglas_calculadora.terminacion_en_cero
 import org.w3c.dom.Text
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.util.ArrayList
 
-open class inicio : AppCompatActivity() {
+open class inicio : AppCompatActivity() , terminacion_en_cero {
+    //views
     lateinit var visor_datos : TextView
     lateinit var resultado_visor : TextView
-
-    var primerNumero: Double? = null
-    var segundoNumero: Double? = null
-
-    var signo : Char?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +24,6 @@ open class inicio : AppCompatActivity() {
         visor_datos = findViewById<TextView>(R.id.cargador_de_datos)
         resultado_visor = findViewById<TextView>(R.id.resultado_visor)
 
-
     }
 
     /**
@@ -34,8 +31,6 @@ open class inicio : AppCompatActivity() {
      */
     fun capturar(view : View) {
         visor_datos.append((view as Button).text)
-
-
     }
 
     /**
@@ -46,9 +41,6 @@ open class inicio : AppCompatActivity() {
         resultado_visor.setText("")
     }
 
-
-
-
     /**
      * Ejecuta la cuenta
      */
@@ -56,45 +48,30 @@ open class inicio : AppCompatActivity() {
         //convierte la cuenta introducida en un array
         var text = visor_datos.text.toString()
         var cadena : CharArray = text.toCharArray()
-        var resultado : Double? = null
+
+
         if (cadena.contains('+')) {
+
             var posicion : Int =cadena.indexOf('+')
-            var texto_valor_uno = cadena.copyOfRange(0,posicion).concatToString()
-            var texto_valor_dos = cadena.copyOfRange(posicion+1 , cadena.size).concatToString()
-            primerNumero = texto_valor_uno.toDouble()
-            segundoNumero = texto_valor_dos.toDouble()
-
-           var resultado : Double = primerNumero!! + segundoNumero!!
-            resultado_visor.setText(resultado.toString())
-
+            val suma = suma(cadena,posicion)
+            resultado_visor.setText(suma.resultado_limpio())
 
         } else if (cadena.contains('-')) {
-            var posicion : Int =cadena.indexOf('-')
-            var texto_valor = cadena.copyOfRange(0,posicion).concatToString()
-            var texto_valor_ = cadena.copyOfRange(posicion+1 , cadena.size).concatToString()
-            primerNumero = texto_valor.toDouble()
-            segundoNumero = texto_valor_.toDouble()
 
-            var resultado : Double = primerNumero!! - segundoNumero!!
-            resultado_visor.setText(resultado.toString())
+            var posicion : Int =cadena.indexOf('-')
+            val resta = resta(cadena,posicion)
+            resultado_visor.setText(resta.resultado_limpio())
+
+
         } else if (cadena.contains('*')) {
             var posicion : Int =cadena.indexOf('*')
-            var t = cadena.copyOfRange(0,posicion).concatToString()
-            var te = cadena.copyOfRange(posicion+1 , cadena.size).concatToString()
-            primerNumero = t.toDouble()
-            segundoNumero = te.toDouble()
+            val multiplicacion = multiplicar(cadena,posicion)
+            resultado_visor.setText(multiplicacion.resultado_limpio())
 
-            var resultado : Double = primerNumero!! * segundoNumero!!
-            resultado_visor.setText(resultado.toString())
         } else if (cadena.contains('/')){
             var posicion : Int =cadena.indexOf('/')
-            var or_uno = cadena.copyOfRange(0,posicion).concatToString()
-            var r_dos = cadena.copyOfRange(posicion+1 , cadena.size).concatToString()
-            primerNumero = or_uno.toDouble()
-            segundoNumero = r_dos.toDouble()
-
-            var resultado : Double  = primerNumero!! / segundoNumero!!
-            resultado_visor.setText(resultado.toString())
+            val division = dividir(cadena,posicion)
+            resultado_visor.setText(division.resultado_limpio())
         }
 
 
@@ -104,4 +81,3 @@ open class inicio : AppCompatActivity() {
 
 
 }
-
